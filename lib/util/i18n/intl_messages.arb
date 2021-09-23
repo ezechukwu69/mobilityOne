@@ -1,0 +1,21 @@
+{
+  "@@last_modified": "2021-07-19T18:33:09.361818",
+  "noConnection": "No Internet connection",
+  "@noConnection": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "serverError": "Server error, please try again",
+  "@serverError": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "genericErrorMessage": "Error",
+  "@genericErrorMessage": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  }
+}
