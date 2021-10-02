@@ -1,7 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobility_one/util/debugBro.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_io/io.dart';
 
 // const String VEHICLES_SHEET = 'vehicles sheet';
 const String redColorHex = '#FF0000';
@@ -133,18 +137,19 @@ class ExcelService {
     return null;
   }
 
-  void downloadImportVehicleTemplate() {
-    creatImportTemplate(vehiclesListHeaderFormat, fileName: 'vehicles_import');
+  Future<bool> downloadImportVehicleTemplate() async {
+    return creatImportTemplate(vehiclesListHeaderFormat,
+        fileName: 'vehicles_import');
   }
 
-  void downloadImportPersonsTemplate() {
-    creatImportTemplate(personsHeaderFormat, fileName: 'persons_import');
+  Future<bool> downloadImportPersonsTemplate() async {
+    return creatImportTemplate(personsHeaderFormat, fileName: 'persons_import');
   }
 
-  void creatImportTemplate(
+  Future<bool> creatImportTemplate(
     List<ColHeader> colHeaderList, {
     required String fileName,
-  }) {
+  }) async {
     try {
       var excel = Excel.createExcel();
 
@@ -185,10 +190,24 @@ class ExcelService {
           cellStyle: colHeaderStyle,
         );
       }
-
-      excel.save(fileName: '$fileName.xlsx');
+      if (kIsWeb) {
+        var data = excel.save(fileName: '$fileName.xlsx');
+        if (data != null) {
+          return true;
+        }
+      } else {
+        var data = excel.encode();
+        if (data == null) return false;
+        var directory = await getApplicationDocumentsDirectory();
+        var file = await File(join('${directory.path}/$fileName.xlsx'))
+            .create(recursive: true);
+        await file.writeAsBytes(data);
+        return true;
+      }
+      return false;
     } catch (e) {
       elog(e);
+      return false;
     }
   }
 

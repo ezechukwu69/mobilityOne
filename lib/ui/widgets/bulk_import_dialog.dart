@@ -94,15 +94,19 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
                 width: 200,
                 child: ConfirmButton(
                   expanded: true,
-                  onPressed: () {
+                  onPressed: () async {
+                    bool isDownloaded;
                     if (widget.importScreen == ImportScreen.Vehicles) {
-                      excelService.downloadImportVehicleTemplate();
+                      isDownloaded =
+                          await excelService.downloadImportVehicleTemplate();
                     } else if (widget.importScreen == ImportScreen.Persons) {
-                      excelService.downloadImportPersonsTemplate();
+                      isDownloaded =
+                          await excelService.downloadImportPersonsTemplate();
+                    } else {
+                      isDownloaded = false;
                     }
 
-                    hasDownloadedTemplate = true;
-
+                    hasDownloadedTemplate = isDownloaded;
                     setState(() {});
                   },
                   title: 'Download template',
